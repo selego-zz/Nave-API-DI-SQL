@@ -34,4 +34,5 @@ Lineas.belongsTo(Cabecera, {
 module.exports = {
   Cabecera,
   Lineas,
+  Pedido: require("./pedido.model")
 }
