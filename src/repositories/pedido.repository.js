@@ -11,6 +11,33 @@ class PedidoRepository {
         this._pedido = pedido;
     }
 
+    async deleteAll() {
+        Lineas.destroy({
+            where: {}, // Sin condiciones, eliminará todos los registros
+            truncate: true // Esto reiniciará los contadores de ID si es necesario
+        })
+            .then(() => {
+                console.log('Lineas eliminadas correctamente.');
+            })
+            .catch((error) => {
+                console.error('Error al eliminar registros:', error);
+                return false;
+            });
+
+        Cabecera.destroy({
+            where: {}, // Sin condiciones, eliminará todos los registros
+            truncate: true // Esto reiniciará los contadores de ID si es necesario
+        })
+            .then(() => {
+                console.log('Cabeceras eliminadas correctamente.');
+            })
+            .catch((error) => {
+                console.error('Error al eliminar registros:', error);
+                return false;
+            });
+        return true;
+    }
+
     async createCabecera(pedidoData) {
         const { Cabecera: CabeceraData } = pedidoData;
         //        console.log('PedidoRepository.createCabecera');
@@ -52,11 +79,11 @@ class PedidoRepository {
             // Confirma la transacción
             await t.commit();
 
-            console.log('Pedido creado correctamente.');
+            console.log('Repository - Pedido creado correctamente.');
         } catch (error) {
             // Si hay un error, deshace la transacción
             await t.rollback();
-            console.error('Error al crear el pedido:', error);
+            console.error('Repository - Error al crear el pedido:', error);
             throw error;
         }
     }
@@ -121,32 +148,6 @@ class PedidoRepository {
     }
     async delete(id) {
         await _pedido.findByIdAndDelete(id);
-        return true;
-    }
-    async deleteAll() {
-        Lineas.destroy({
-            where: {}, // Sin condiciones, eliminará todos los registros
-            truncate: true // Esto reiniciará los contadores de ID si es necesario
-        })
-            .then(() => {
-                console.log('Lineas eliminadas correctamente.');
-            })
-            .catch((error) => {
-                console.error('Error al eliminar registros:', error);
-                return false;
-            });
-
-        Cabecera.destroy({
-            where: {}, // Sin condiciones, eliminará todos los registros
-            truncate: true // Esto reiniciará los contadores de ID si es necesario
-        })
-            .then(() => {
-                console.log('Cabeceras eliminadas correctamente.');
-            })
-            .catch((error) => {
-                console.error('Error al eliminar registros:', error);
-                return false;
-            });
         return true;
     }
 

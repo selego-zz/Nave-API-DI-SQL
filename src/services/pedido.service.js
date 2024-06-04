@@ -7,16 +7,20 @@ class PedidoService extends BaseService {
         this._pedidoRepository = PedidoRepository;
     }
     async createPedidos(pedidosData) {
-        return sequelize.transaction(async (t) => {
-            const pedidos = await Promise.all(
-                pedidosData.map(async (pedidoData) => {
-                    return await this.createPedido(pedidoData, { transaction: t });
-                })
-            );
-            return pedidos;
-        });
+        try {
+            await this._pedidoRepository.deleteAll();
+            for (const pedidoData of pedidosData) {
+                await this._pedidoRepository.createCabecera(pedidoData.p_Cabecera);
+                for (const lineaData of pedidoData.p_Lineas) {
+                    await this._pedidoRepository.createLinea(lineaData);
+                }
+            }
+            console.log('Service - Pedidos creados correctamente.');
+        } catch (error) {
+            console.error('Service - Error al crear los pedidos:', error);
+            throw error;
+        }
     }
-
     /* por revisar */
 
     async createCabecera(entity) {
