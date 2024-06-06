@@ -14,6 +14,7 @@ module.exports = function ({ PedidoController }) {
     const middlewaresConCache = [AuthMiddleware, ParseIntMiddleware, CacheMiddleware(CACHE_TIME.ONE_HOUR)];
 
     router.post("/pedidos", middlewaresSinCache, PedidoController.createPedidos);
+    router.get("", middlewaresSinCache, PedidoController.getAll);
 
     /* por revisar */
     router.post("/cabecera", middlewaresSinCache, PedidoController.createCabecera);
@@ -21,7 +22,6 @@ module.exports = function ({ PedidoController }) {
     router.delete("", middlewaresSinCache, PedidoController.deleteAll);//será numero
     router.delete("/:pedidoId", middlewaresSinCache, PedidoController.delete);//será numero
     router.patch("/:pedidoId", middlewaresSinCache, PedidoController.update);
-    router.get("", middlewaresSinCache, PedidoController.getAll);
     router.get("/listos", middlewaresSinCache, PedidoController.getListos);
     router.get("/:pedidoId", middlewaresSinCache, PedidoController.get);
 

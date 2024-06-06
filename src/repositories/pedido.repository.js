@@ -4,12 +4,7 @@ const Sequelize = require('sequelize');
 const lineas = require('../models/lineas.model');
 const sequelize = new Sequelize(MYSQL_URI); // Crea una instancia de Sequelize con la cadena de conexión a MySQL
 
-let _pedido = null;
-
 class PedidoRepository {
-    constructor(pedido) {
-        this._pedido = pedido;
-    }
 
     async deleteAll() {
         const tL = await sequelize.transaction();
@@ -97,14 +92,7 @@ class PedidoRepository {
             throw error;
         }
     }
-
-    /* por revisar */
-
-    async get(id) {
-        return await _pedido.findById(id);
-    }
     async getAll(pageSize = 100, pageNum = 1) {
-        console.log('PedidoRepository.GetAll, _pedido ' + this._pedido);
 
         try {
             const offset = (pageNum - 1) * pageSize;
@@ -126,6 +114,12 @@ class PedidoRepository {
 
             throw error;
         }
+    }
+
+    /* por revisar */
+
+    async get(id) {
+        return await _pedido.findById(id);
     }
     async getListos(pageSize = 100, pageNum = 1) {
         console.log('PedidoRepository.GetListos, _pedido ' + this._pedido);
