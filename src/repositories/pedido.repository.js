@@ -12,34 +12,44 @@ class PedidoRepository {
     }
 
     async deleteAll() {
-        Lineas.destroy({
-            where: {}, // Sin condiciones, eliminará todos los registros
-            truncate: true // Esto reiniciará los contadores de ID si es necesario
-        })
-            .then(() => {
-                console.log('Lineas eliminadas correctamente.');
-            })
-            .catch((error) => {
-                console.error('Error al eliminar registros:', error);
-                return false;
-            });
+        const tL = await sequelize.transaction();
+        try {
+            await Lineas.destroy({
+                where: {}, // Sin condiciones, eliminará todos los registros
+                truncate: true // Esto reiniciará los contadores de ID si es necesario
+            }, { transaction: tL });
+            // Confirma la transacción
+            await tL.commit();
 
-        Cabecera.destroy({
-            where: {}, // Sin condiciones, eliminará todos los registros
-            truncate: true // Esto reiniciará los contadores de ID si es necesario
-        })
-            .then(() => {
-                console.log('Cabeceras eliminadas correctamente.');
-            })
-            .catch((error) => {
-                console.error('Error al eliminar registros:', error);
-                return false;
-            });
+            console.log('Lineas eliminadas correctamente.');
+        } catch (error) {
+            // Si hay un error, deshace la transacción
+            await tL.rollback();
+            console.error('Error al eliminar registros:', error);
+            throw error;
+        }
+
+        const tC = await sequelize.transaction();
+        try {
+            await Cabecera.destroy({
+                where: {}, // Sin condiciones, eliminará todos los registros
+                truncate: true // Esto reiniciará los contadores de ID si es necesario
+            }, { transaction: tC });
+            // Confirma la transacción
+            await tC.commit();
+
+            console.log('Cabeceras eliminadas correctamente.');
+        } catch (error) {
+            // Si hay un error, deshace la transacción
+            await tC.rollback();
+            console.error('Error al eliminar registros:', error);
+            throw error;
+        }
         return true;
     }
 
     async createCabecera(pedidoData) {
-        const { Cabecera: CabeceraData } = pedidoData;
+        //const { Cabecera: CabeceraData } = pedidoData;
         //        console.log('PedidoRepository.createCabecera');
         //        console.log('----> PedidoRepository.createCabecera, pedidoData ' + pedidoData);
         //        console.log(JSON.stringify(pedidoData, null, 2));
